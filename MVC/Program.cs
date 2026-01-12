@@ -1,11 +1,19 @@
 using Microsoft.EntityFrameworkCore;
+using MVC.Data;
+using MVC.Models;
+using Npgsql;
 
 // Configure app settings from appsettings.json.
 var builder = WebApplication.CreateBuilder(args);
 
 // Configure database connection.
+var dataSourceBuilder = new NpgsqlDataSourceBuilder(
+    builder.Configuration.GetConnectionString("DefaultConnection"));
+dataSourceBuilder.MapEnum<UserType>();
+var dataSource = dataSourceBuilder.Build();
+
 builder.Services.AddDbContext<UniversityAppDB>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseNpgsql(dataSource));
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
