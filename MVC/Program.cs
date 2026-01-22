@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using MVC.Data;
 using MVC.Models;
 using Npgsql;
@@ -17,6 +18,16 @@ builder.Services.AddDbContext<UniversityAppDB>(options =>
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+// Add cookie authentication
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Home/Login";
+        options.LogoutPath = "/Home/Logout";
+        options.AccessDeniedPath = "/Home/Privacy";
+        options.SlidingExpiration = true;
+    });
 
 var app = builder.Build();
 
@@ -53,6 +64,7 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapStaticAssets();

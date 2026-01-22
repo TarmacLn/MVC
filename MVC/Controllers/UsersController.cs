@@ -1,13 +1,15 @@
 using System.Data;
 using System.Diagnostics;
-using System.Security.Cryptography.X509Certificates;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 using MVC.Data;
 using MVC.Models;
 
 namespace MVC.Controllers
 {
+    [Authorize]
     public class UsersController : Controller
     {
         private readonly UniversityAppDB _context;
@@ -27,6 +29,7 @@ namespace MVC.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(string username, string password, string userType)
         {
             if (ModelState.IsValid)
