@@ -12,6 +12,16 @@ namespace MVC.Models
         Student
     }
 
+    public enum Department
+    {
+        [Display(Name = "Computer Science")]
+        ComputerScience,
+        [Display(Name = "Business Administration")]
+        BusinessAdministration,
+        [Display(Name = "Sociology")]
+        Sociology
+    }
+
     public class User
     {
         [Column("user_id")]
@@ -26,5 +36,9 @@ namespace MVC.Models
         [Required]
         public UserType UserType { get; set; } = UserType.Student;
 
+        // Navigation properties
+        public Student? Student { get; set; }
+        public Professor? Professor { get; set; }
+        public Secretary? Secretary { get; set; }
     }
 }
