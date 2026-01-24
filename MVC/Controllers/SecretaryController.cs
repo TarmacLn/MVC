@@ -1,4 +1,6 @@
+using System.Transactions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using MVC.Data;
@@ -12,6 +14,44 @@ namespace MVC.Controllers {
         public SecretaryController(UniversityAppDB context)
         {
             _context = context;
+        }
+
+        private static readonly Dictionary<int, string> CourseDepartmentMapping = new()
+        {
+            // Computer Science
+            { 1, "Computer Science" },
+            { 2, "Computer Science" },
+            { 3, "Computer Science" },
+            { 4, "Computer Science" },
+            { 5, "Computer Science" },
+            { 6, "Computer Science" },
+            {7, "Computer Science" },
+            {8, "Computer Science" },
+
+            // Sociology
+            { 9, "Sociology" },
+            { 10, "Sociology" },
+            { 11, "Sociology" },
+            { 12, "Sociology" },
+            { 13, "Sociology" },
+            { 14, "Sociology" },
+            {15, "Sociology" },
+            {16, "Sociology" },
+
+            // Business Administration
+            { 17, "Business Administration" },
+            { 18, "Business Administration" },
+            { 19, "Business Administration" },
+            { 20, "Business Administration" },
+            { 21, "Business Administration" },
+            { 22, "Business Administration" },
+            {23, "Business Administration" },
+            {24, "Business Administration" },
+        };
+
+        private string GetDepartmentCourseName(int courseId)
+        {
+            return CourseDepartmentMapping.TryGetValue(courseId, out var dept) ? dept : "Unknown";
         }
 
         private string GetDepartmentValue(Department department)
@@ -41,6 +81,14 @@ namespace MVC.Controllers {
             return View(users);
         }
 
+        public async Task<IActionResult> CoursesList()
+        {
+            var courses = await _context.Courses
+                .Include(c => c.Professor)
+                .ToListAsync();
+
+            return View(courses);          
+        }
 
         // User Management Functions
 
@@ -193,6 +241,72 @@ namespace MVC.Controllers {
                 TempData["ErrorMessage"] = "Error while deleting the user: " + e.Message;
                 return RedirectToAction(nameof(UsersList));
             }
+        }
+
+
+        // Course Management Functions
+
+        [HttpGet]
+        public async Task<IActionResult> AssignCourse(int professorId)
+        {
+            var professors = await _context.Professors.FindAsync(professorId);
+            if (professors == null)
+            {
+                TempData["ErrorMessage"] = "Error occured while selecting this professor";
+                return RedirectToAction(nameof(UsersList));
+            }
+
+            var allCourses = await _context.Courses.ToListAsync(); 
+
+            var filteredCourses = allCourses
+                .Where(c => GetDepartmentCourseName(c.CourseId) == professors.Department)
+                .ToList();
+            
+            var model = new AssignCourseViewModel
+            {
+                ProfessorId = professorId,
+                ProfessorName = professors.Fullname,
+                ProfessorDepartment = professors.Department,
+                Courses= new SelectList(filteredCourses, "CourseId", "Title")
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AssignCourse(AssignCourseViewModel model)
+        {
+            var professor = await _context.Professors.FindAsync(model.ProfessorId);
+
+            if (!ModelState.IsValid)
+            {
+                var allCourses = await _context.Courses.ToListAsync();
+                
+                var filteredCourses = allCourses
+                    .Where(c=> GetDepartmentCourseName(c.CourseId) == professor!.Department)
+                    .ToList();
+                
+                model.ProfessorName = professor?.Fullname ?? "";
+                model.ProfessorDepartment = professor?.Department ?? "";
+                model.Courses = new SelectList(filteredCourses, "CourseId", "Title");
+
+                return View(model);
+            }
+
+            var course = await _context.Courses.FindAsync(model.CourseId);
+            if (course == null)
+            {
+                TempData["ErrorMessage"] = "Error occured while assigning the course";
+                return RedirectToAction(nameof(UsersList));
+            }
+
+            // Reassign course to the selected professor
+            course.ProfessorId = model.ProfessorId;
+            await _context.SaveChangesAsync();
+        
+            TempData["SuccessMessage"] = "Course assigned to professor successfully!";
+            return RedirectToAction(nameof(UsersList));
         }
     }
 }

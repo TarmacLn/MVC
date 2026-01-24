@@ -1,0 +1,52 @@
+@model MVC.Models.AssignCourseViewModel
+
+@{
+    var successMessage = TempData["SuccessMessage"] as string;
+    var errorMessage = TempData["ErrorMessage"] as string;
+}
+
+<a asp-action="UsersList" asp-controller="Secretary" class="btn btn-secondary">Back</a>
+
+<br>
+
+<h1>Assign Course to Professor</h1>
+
+@if (!string.IsNullOrEmpty(successMessage)) {
+    <div class="alert alert-success" role="alert">@successMessage</div>
+}
+
+@if (!string.IsNullOrEmpty(errorMessage)) {
+    <div class="alert alert-danger" role="alert">@errorMessage</div>
+}
+
+
+<br>
+
+<form asp-action="AssignCourse" method="post">
+    @Html.AntiForgeryToken()
+
+    <input type="hidden" asp-for="ProfessorId" />
+
+    <div class="form-group mb-3">
+        <label>Professor</label>
+        <input type="text" class="form-control" value="@Model.ProfessorName" readonly />
+    </div>
+
+    <div class="form-group mb-3">
+        <label>Department</label>
+        <input type="text" class="form-control" value="@Model.ProfessorDepartment" readonly />
+    </div>
+
+    <div class="form-group mb-3">
+        <label asp-for="CourseId">Department Courses</label>
+        <select asp-for="CourseId" class="form-control" asp-items="Model.Courses">
+            <option value="">Select Course</option>
+        </select>
+        <span asp-validation-for="CourseId" class="text-danger"></span>
+    </div>
+
+    <br>
+    <button type="submit" class="btn btn-primary" onclick="return confirm('Are you sure you want to assign this course?');">Assign Course</button>
+</form>
+
+<div asp-validation-summary="ModelOnly" class="text-danger mt-2"></div>

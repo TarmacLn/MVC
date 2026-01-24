@@ -13,6 +13,7 @@ namespace MVC.Data
         public DbSet<Student> Students { get; set; }
         public DbSet<Professor> Professors { get; set; }
         public DbSet<Secretary> Secretaries { get; set; }
+        public DbSet<Course> Courses { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -47,6 +48,15 @@ namespace MVC.Data
                 .WithOne(u => u.Secretary)
                 .HasForeignKey<Secretary>(s => s.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Course>().ToTable("courses");
+            modelBuilder.Entity<Course>()
+                .HasKey(c => c.CourseId);
+            modelBuilder.Entity<Course>()
+                .HasOne(c => c.Professor)
+                .WithMany()
+                .HasForeignKey(c => c.ProfessorId)
+                .OnDelete(DeleteBehavior.SetNull);
         }
     }
 }

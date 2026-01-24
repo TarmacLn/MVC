@@ -1,0 +1,107 @@
+@model IEnumerable<MVC.Models.Course>
+
+<a asp-action="Index" asp-controller="Secretary" class="btn btn-secondary">Back</a>
+
+<br>
+
+<h2>All Courses</h2>
+
+<br>
+
+<h2>Computer Science</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Semester</th>
+            <th>Professor</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var course in Model.Where(c => c.Professor != null && c.Professor.Department == "Computer Science"))
+    {
+        <tr>
+            <td>@course.CourseId</td>
+            <td>@course.Title</td>
+            <td>@course.Semester</td>
+            <td>@course.Professor?.Fullname</td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+<br>
+
+<h2>Sociology</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Semester</th>
+            <th>Professor</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach( var course in Model.Where(c => c.Professor != null && c.Professor.Department == "Sociology"))
+    {
+        <tr>
+            <td>@course.CourseId</td>
+            <td>@course.Title</td>
+            <td>@course.Semester</td>
+            <td>@course.Professor?.Fullname</td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+<br>
+
+<h2>Business Administration</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Semester</th>
+            <th>Professor</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var course in Model.Where(c => c.Professor != null && c.Professor.Department == "Business Administration"))
+    {
+        <tr>
+            <td>@course.CourseId</td>
+            <td>@course.Title</td>
+            <td>@course.Semester</td>
+            <td>@course.Professor?.Fullname</td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+<br>
+
+<h2>Unassigned Courses</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Semester</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var course in Model.Where(c => c.Professor == null))
+    {
+        <tr>
+            <td>@course.CourseId</td>
+            <td>@course.Title</td>
+            <td>@course.Semester</td>
+        </tr>
+    }
+    </tbody>
+</table>
+
