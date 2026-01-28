@@ -20,6 +20,7 @@ namespace MVC.Models
         [Column("professor_id")]
         public int? ProfessorId { get; set; }
 
+        // Navigation property
         [ForeignKey("ProfessorId")]
         public Professor? Professor { get; set; } 
     }

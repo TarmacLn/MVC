@@ -1,0 +1,129 @@
+@model IEnumerable<MVC.Models.Student>
+
+<a asp-action="Index" asp-controller="Secretary" class="btn btn-secondary">Back</a>
+
+<br>
+
+<h2>Students' Enrolled Courses</h2>
+
+<br>
+
+<h2>Computer Science Students</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Student ID</th>
+            <th>Student Name</th>
+            <th>Enrolled Courses</th>
+            <th>Semester</th>
+            <th>Professor</th>
+        </tr>
+    </thead>
+    <tbody>
+     @foreach (var student in Model.Where(s => s.Department == "Computer Science"))
+    {
+        @if (student.EnrolledCourses.Any())
+        {
+            @foreach (var enrollment in student.EnrolledCourses)
+            {
+                <tr>
+                    <td>@student.UserId</td>
+                    <td>@student.Fullname</td>
+                    <td>@enrollment.Course.Title</td>
+                    <td>@enrollment.Course.Semester</td>
+                    <td>@enrollment.Course.Professor?.Fullname</td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td>@student.UserId</td>
+                <td>@student.Fullname</td>
+                <td colspan="3"><em>No enrolled courses</em></td>
+            </tr>
+        }
+    }
+    </tbody>
+</table>
+br>
+
+<h2>Sociology Students</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Student ID</th>
+            <th>Student Name</th>
+            <th>Enrolled Courses</th>
+            <th>Semester</th>
+            <th>Professor</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var student in Model.Where(s => s.Department == "Sociology"))
+    {
+        @if (student.EnrolledCourses.Any())
+        {
+            @foreach (var enrollment in student.EnrolledCourses)
+            {
+                <tr>
+                    <td>@student.UserId</td>
+                    <td>@student.Fullname</td>
+                    <td>@enrollment.Course.Title</td>
+                    <td>@enrollment.Course.Semester</td>
+                    <td>@enrollment.Course.Professor?.Fullname</td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td>@student.UserId</td>
+                <td>@student.Fullname</td>
+                <td colspan="3"><em>No enrolled courses</em></td>
+            </tr>
+        }
+    }
+    </tbody>
+</table>
+
+<br>
+
+<h2>Business Administration Students</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Student ID</th>
+            <th>Student Name</th>
+            <th>Enrolled Courses</th>
+            <th>Semester</th>
+            <th>Professor</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var student in Model.Where(s => s.Department == "Business Administration"))
+    {
+        @if (student.EnrolledCourses.Any())
+        {
+            @foreach (var enrollment in student.EnrolledCourses)
+            {
+                <tr>
+                    <td>@student.UserId</td>
+                    <td>@student.Fullname</td>
+                    <td>@enrollment.Course.Title</td>
+                    <td>@enrollment.Course.Semester</td>
+                    <td>@enrollment.Course.Professor?.Fullname</td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td>@student.UserId</td>
+                <td>@student.Fullname</td>
+                <td colspan="3"><em>No enrolled courses</em></td>
+            </tr>
+        }
+    }
+    </tbody>
+</table>
