@@ -90,7 +90,7 @@ namespace MVC.Controllers {
             return View(courses);          
         }
 
-        public async Task<IActionResult> StudentCoursesList()
+        public async Task<IActionResult> StudentsCoursesList()
         {
             var students = await _context.Students
                 .Include(ec => ec.EnrolledCourses)
@@ -104,7 +104,7 @@ namespace MVC.Controllers {
         [HttpGet]
         public async Task<IActionResult> EnrollInCourse(int studentId)
         {
-            var student = await _context.Students.FindAsync(studentId);
+            var student = await _context.Students.FirstOrDefaultAsync( s => s.UserId ==studentId);
             if (student == null)
             {
                 TempData["ErrorMessage"] = "Error occured while selecting this student";
@@ -132,7 +132,7 @@ namespace MVC.Controllers {
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EnrollInCourse(EnrollInCourseViewModel model)
         {
-            var student = await _context.Students.FindAsync(model.StudentId);
+            var student = await _context.Students.FirstOrDefaultAsync(s => s.UserId == model.StudentId);
 
             if (!ModelState.IsValid)
             {
@@ -147,6 +147,14 @@ namespace MVC.Controllers {
                 model.Courses = new SelectList(filteredCourses, "CourseId", "Title");
 
                 return View(model);
+            }
+
+            // Some validation
+            var course = await _context.Courses.FindAsync(model.CourseId);
+            if (course == null)
+            {
+                TempData["ErrorMessage"] = "Error occured while enrolling in this course";
+                return RedirectToAction(nameof(EnrollInCourse), new { studentId = model.StudentId });
             }
 
             var alreadyEnrolled = await _context.CourseHasStudents
@@ -174,11 +182,7 @@ namespace MVC.Controllers {
             }
 
         }
-
-        
-
-        
-
+ 
 
         // User Management Functions
 
@@ -339,7 +343,8 @@ namespace MVC.Controllers {
         [HttpGet]
         public async Task<IActionResult> AssignCourse(int professorId)
         {
-            var professors = await _context.Professors.FindAsync(professorId);
+            var professors = await _context.Professors.FirstOrDefaultAsync(p => p.UserId == professorId);
+
             if (professors == null)
             {
                 TempData["ErrorMessage"] = "Error occured while selecting this professor";
@@ -367,7 +372,7 @@ namespace MVC.Controllers {
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AssignCourse(AssignCourseViewModel model)
         {
-            var professor = await _context.Professors.FindAsync(model.ProfessorId);
+            var professor = await _context.Professors.FirstOrDefaultAsync(p => p.UserId == model.ProfessorId);
 
             if (!ModelState.IsValid)
             {
@@ -385,10 +390,23 @@ namespace MVC.Controllers {
             }
 
             var course = await _context.Courses.FindAsync(model.CourseId);
+            
             if (course == null)
             {
                 TempData["ErrorMessage"] = "Error occured while assigning the course";
                 return RedirectToAction(nameof(UsersList));
+            }
+
+            if (course.ProfessorId == model.ProfessorId)
+            {
+                TempData["ErrorMessage"] = "This course is already assigned to this professor";
+                return RedirectToAction(nameof(AssignCourse), new { professorId = model.ProfessorId });
+            }
+
+            if (course.ProfessorId != null)
+            {
+                TempData["ErrorMessage"] = "This course is already assigned to another professor";
+                return RedirectToAction(nameof(AssignCourse), new { professorId = model.ProfessorId });
             }
 
             // Reassign course to the selected professor
