@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MVC.Data;
 using MVC.Models;
+using System.Security.Claims;
 
 namespace MVC.Controllers
 {
@@ -17,8 +18,19 @@ namespace MVC.Controllers
 
         private int? GetCurrentStudentId()
         {
-            // Retrieve logged-in User ID from Session
-            return HttpContext.Session.GetInt32("StudentId");
+            // if user is not authenticated, return null
+            if (User == null || User.Identity == null || !User.Identity.IsAuthenticated)
+            {
+                return null; 
+            }
+
+            // if student is authenticated, return their ID
+            
+            if (int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out int userId))
+            {
+                return userId;
+            }
+            return null;
         }
         
         // View Grades per Subject
