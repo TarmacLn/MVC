@@ -25,7 +25,7 @@ namespace MVC.Controllers
             }
 
             // if student is authenticated, return their ID
-            
+
             if (int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out int userId))
             {
                 return userId;
@@ -33,6 +33,25 @@ namespace MVC.Controllers
             return null;
         }
         
+
+
+        public async Task<IActionResult> Index()
+        {
+            var studentId = GetCurrentStudentId();
+            if (studentId == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+            
+            var grades = await _context.CourseHasStudents
+                .Include(g => g.Course)
+                .Where(g => g.StudentId == studentId)
+                .ToListAsync();
+
+            return View(grades);
+        }
+
+
         // View Grades per Subject
         public async Task<IActionResult> GradesPerSubject()
         {

@@ -1,0 +1,83 @@
+@model IEnumerable<MVC.Models.CourseHasStudent>
+
+<div class="container">
+    <div>
+    @{
+        ViewData["Title"] = "Student Dashboard";
+    }
+    </div>
+    <br />
+    <br />
+    <br />
+    <h2>Grades per Semester</h2>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Semester</th>
+                <th>Course Title</th>
+                <th>Grade</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Course.Semester</td>
+                    <td>@item.Course.Title</td>
+                    <td>@item.Grade</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <br />
+    <br />
+    <br />
+    <div>
+        <h2>Grades per Course</h2>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Course Title</th>
+                    <th>Semester</th>
+                    <th>Grade</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.Course.Title</td> <td>@item.Course.Semester</td>
+                        <td>
+                            <span>@item.Grade</span>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <br />
+    <br />
+    <br />
+    <div>
+        <h2>Passed Courses</h2>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Course</th>
+                    <th>Semester</th>
+                    <th>Final Grade</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.Course.Title</td>
+                        <td>@item.Course.Semester</td>
+                        <td>@item.Grade</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
