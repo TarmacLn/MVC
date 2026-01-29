@@ -16,7 +16,6 @@
             <th>Student Name</th>
             <th>Enrolled Courses</th>
             <th>Semester</th>
-            <th>Professor</th>
         </tr>
     </thead>
     <tbody>
@@ -31,7 +30,6 @@
                     <td>@student.Fullname</td>
                     <td>@enrollment.Course.Title</td>
                     <td>@enrollment.Course.Semester</td>
-                    <td>@enrollment.Course.Professor?.Fullname</td>
                 </tr>
             }
         }
@@ -46,7 +44,8 @@
     }
     </tbody>
 </table>
-br>
+
+<br>
 
 <h2>Sociology Students</h2>
 <table class="table">
@@ -56,7 +55,6 @@ br>
             <th>Student Name</th>
             <th>Enrolled Courses</th>
             <th>Semester</th>
-            <th>Professor</th>
         </tr>
     </thead>
     <tbody>
@@ -71,7 +69,6 @@ br>
                     <td>@student.Fullname</td>
                     <td>@enrollment.Course.Title</td>
                     <td>@enrollment.Course.Semester</td>
-                    <td>@enrollment.Course.Professor?.Fullname</td>
                 </tr>
             }
         }
@@ -97,7 +94,6 @@ br>
             <th>Student Name</th>
             <th>Enrolled Courses</th>
             <th>Semester</th>
-            <th>Professor</th>
         </tr>
     </thead>
     <tbody>
@@ -112,7 +108,6 @@ br>
                     <td>@student.Fullname</td>
                     <td>@enrollment.Course.Title</td>
                     <td>@enrollment.Course.Semester</td>
-                    <td>@enrollment.Course.Professor?.Fullname</td>
                 </tr>
             }
         }

@@ -25,28 +25,26 @@
 <form asp-action="EnrollInCourse" method="post">
     @Html.AntiForgeryToken()
 
-    <div class="form-group">
-        <label asp-for="Department"></label>
-        <select asp-for="Department" class="form-control" asp-items="Html.GetEnumSelectList<MVC.Models.Department>()">
-            <option value="">Select Department</option>
-        </select>
-        <span asp-validation-for="Department" class="text-danger"></span>
+     <div class="form-group mb-3">
+        <label>Student</label>
+        <input type="text" class="form-control" value="@Model.StudentName" readonly />
     </div>
-    <div class="form-group">
-        <label asp-for="Course"></label>
-        <select asp-for="Course" class="form-control" asp-items="Html.GetEnumSelectList<MVC.Models.Course>()">
+
+    <div class="form-group mb-3">
+        <label>Department</label>
+        <input type="text" class="form-control" value="@Model.StudentDepartment" readonly />
+    </div>
+
+    <div class="form-group mb-3">
+        <label asp-for="CourseId">Department Courses</label>
+        <select asp-for="CourseId" class="form-control" asp-items="Model.Courses">
             <option value="">Select Course</option>
         </select>
-        <span asp-validation-for="Course" class="text-danger"></span>
+        <span asp-validation-for="CourseId" class="text-danger"></span>
     </div>
-    <div class="form-group">
-        <label asp-for="Student"></label>
-        <select asp-for="Student" class="form-control" asp-items="Html.GetEnumSelectList<MVC.Models.Student>()">
-            <option value="">Select Student</option>
-        </select>
-        <span asp-validation-for="Student" class="text-danger"></span>
-    </div>
+
     <br>
+
     <button type="submit" class="btn btn-primary">Confirm</button>
 </form>
 
