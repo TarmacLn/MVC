@@ -14,6 +14,7 @@ namespace MVC.Data
         public DbSet<Professor> Professors { get; set; }
         public DbSet<Secretary> Secretaries { get; set; }
         public DbSet<Course> Courses { get; set; }
+        public DbSet<CourseHasStudent> CourseHasStudents { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
