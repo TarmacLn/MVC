@@ -27,15 +27,21 @@
 
     <input type="hidden" asp-for="StudentId" />
 
+    <br>
+
      <div class="form-group mb-3">
         <label>Student</label>
         <input type="text" class="form-control" value="@Model.StudentName" readonly />
     </div>
 
+    <br>
+
     <div class="form-group mb-3">
         <label>Department</label>
         <input type="text" class="form-control" value="@Model.StudentDepartment" readonly />
     </div>
+
+    <br>
 
     <div class="form-group mb-3">
         <label asp-for="CourseId">Department Courses</label>
@@ -47,7 +53,7 @@
 
     <br>
 
-    <button type="submit" class="btn btn-primary">Confirm</button>
+    <button type="submit" class="btn btn-primary" onclick="return confirm('Are you sure you want to enroll this student in this course?');">Confirm</button>
 </form>
 
 <div asp-validation-summary="All" class="text-danger mt-2"></div>

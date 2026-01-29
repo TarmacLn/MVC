@@ -9,7 +9,9 @@
 
 <br>
 
-<h1>Users</h1>
+<h2>Users</h2>
+<p>Manage professors and students in the system. Assign courses to professors and enroll students to courses according to their department</p>
+<p>For assiging courses or enrolling in courses, select the preferred users from the users' list</p>
 
 @if (!string.IsNullOrEmpty(successMessage)) {
     <div class="alert alert-success" role="alert">@successMessage</div>
@@ -21,7 +23,7 @@
 
 <br>
 
-<h2>Professors</h2>
+<h3>Professors</h3>
 <table class="table">
     <thead>
         <tr>
@@ -62,7 +64,7 @@
 
 <br>
 
-<h2>Students</h2>
+<h3>Students</h3>
 <table class="table">
     <thead>
         <tr>
@@ -85,7 +87,7 @@
             <td>@user.Student?.Fullname</td>
             <td>@user.Student?.Department.ToString()</td>
             <td>
-                <a asp-action="EnrollInCourse" asp-controller="Secretary" asp-route-studentId="@user.Student?.UserId" class="btn btn-primary btn-sm" style="display:inline;">Enroll</a>
+                <a asp-action="EnrollInCourse" asp-controller="Secretary" asp-route-studentId="@user.Student?.UserId" class="btn btn-primary btn-sm" style="display:inline;">Enroll in Course</a>
             </td>
             <td>
                 <form asp-action="DeleteUser" asp-controller="Secretary" method="post" style="display:inline;">
