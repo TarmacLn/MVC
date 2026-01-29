@@ -5,9 +5,11 @@ namespace MVC.Models
 {
     public class CourseHasStudent
     {
+        [Key]
         [Column("course_id")]
         public int CourseId { get; set; }
 
+        [Key]
         [Column("student_id")]
         public int StudentId { get; set; }
 
@@ -26,8 +28,5 @@ namespace MVC.Models
 
         [ForeignKey("StudentId")]
         public Student Student { get; set; } = null!;
-
-
-        public ICollection<CourseHasStudent> EnrolledStudents { get; set; } = new List<CourseHasStudent>();
     }
 }

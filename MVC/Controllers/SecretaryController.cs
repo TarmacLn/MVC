@@ -90,6 +90,16 @@ namespace MVC.Controllers {
             return View(courses);          
         }
 
+        public async Task<IActionResult> StudentCoursesList()
+        {
+            var students = await _context.Courses
+                .Include(ec => ec.EnrolledCourses)
+                    .ThenInclude(c => c.Course)
+                .ToListAsync();
+
+                return View(students);
+        }
+
         // User Management Functions
 
         public IActionResult AddProfessor()

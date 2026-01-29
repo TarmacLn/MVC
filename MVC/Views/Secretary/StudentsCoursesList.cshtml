@@ -15,32 +15,25 @@
             <th>Student ID</th>
             <th>Student Name</th>
             <th>Enrolled Courses</th>
-            <th>Semester</th>
         </tr>
     </thead>
     <tbody>
-     @foreach (var student in Model.Where(s => s.Department == "Computer Science"))
+    @foreach (var student in Model.Where(s => s.Department == "Computer Science"))
     {
-        @if (student.EnrolledCourses.Any())
-        {
-            @foreach (var enrollment in student.EnrolledCourses)
-            {
-                <tr>
-                    <td>@student.UserId</td>
-                    <td>@student.Fullname</td>
-                    <td>@enrollment.Course.Title</td>
-                    <td>@enrollment.Course.Semester</td>
-                </tr>
-            }
-        }
-        else
-        {
-            <tr>
-                <td>@student.UserId</td>
-                <td>@student.Fullname</td>
-                <td colspan="3"><em>No enrolled courses</em></td>
-            </tr>
-        }
+        <tr>
+            <td>@student.UserId</td>
+            <td>@student.Fullname</td>
+            <td>
+                @if (student.EnrolledCourses.Any())
+                {
+                    @string.Join(", ", student.EnrolledCourses.Select(ec => $"{ec.Course.Title} (Sem {ec.Course.Semester})"))
+                }
+                else
+                {
+                    <em>No enrolled courses</em>
+                }
+            </td>
+        </tr>
     }
     </tbody>
 </table>
@@ -54,32 +47,25 @@
             <th>Student ID</th>
             <th>Student Name</th>
             <th>Enrolled Courses</th>
-            <th>Semester</th>
         </tr>
     </thead>
     <tbody>
     @foreach (var student in Model.Where(s => s.Department == "Sociology"))
     {
-        @if (student.EnrolledCourses.Any())
-        {
-            @foreach (var enrollment in student.EnrolledCourses)
-            {
-                <tr>
-                    <td>@student.UserId</td>
-                    <td>@student.Fullname</td>
-                    <td>@enrollment.Course.Title</td>
-                    <td>@enrollment.Course.Semester</td>
-                </tr>
-            }
-        }
-        else
-        {
-            <tr>
-                <td>@student.UserId</td>
-                <td>@student.Fullname</td>
-                <td colspan="3"><em>No enrolled courses</em></td>
-            </tr>
-        }
+        <tr>
+            <td>@student.UserId</td>
+            <td>@student.Fullname</td>
+            <td>
+                @if (student.EnrolledCourses.Any())
+                {
+                    @string.Join(", ", student.EnrolledCourses.Select(ec => $"{ec.Course.Title} (Sem {ec.Course.Semester})"))
+                }
+                else
+                {
+                    <em>No enrolled courses</em>
+                }
+            </td>
+        </tr>
     }
     </tbody>
 </table>
@@ -93,32 +79,25 @@
             <th>Student ID</th>
             <th>Student Name</th>
             <th>Enrolled Courses</th>
-            <th>Semester</th>
         </tr>
     </thead>
     <tbody>
     @foreach (var student in Model.Where(s => s.Department == "Business Administration"))
     {
-        @if (student.EnrolledCourses.Any())
-        {
-            @foreach (var enrollment in student.EnrolledCourses)
-            {
-                <tr>
-                    <td>@student.UserId</td>
-                    <td>@student.Fullname</td>
-                    <td>@enrollment.Course.Title</td>
-                    <td>@enrollment.Course.Semester</td>
-                </tr>
-            }
-        }
-        else
-        {
-            <tr>
-                <td>@student.UserId</td>
-                <td>@student.Fullname</td>
-                <td colspan="3"><em>No enrolled courses</em></td>
-            </tr>
-        }
+        <tr>
+            <td>@student.UserId</td>
+            <td>@student.Fullname</td>
+            <td>
+                @if (student.EnrolledCourses.Any())
+                {
+                    @string.Join(", ", student.EnrolledCourses.Select(ec => $"{ec.Course.Title} (Sem {ec.Course.Semester})"))
+                }
+                else
+                {
+                    <em>No enrolled courses</em>
+                }
+            </td>
+        </tr>
     }
     </tbody>
 </table>

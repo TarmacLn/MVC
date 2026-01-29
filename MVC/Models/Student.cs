@@ -20,5 +20,7 @@ namespace MVC.Models
         // Navigation property
         [ForeignKey("UserId")]
         public User? User { get; set; }
+
+        public ICollection<CourseHasStudent> EnrolledCourses { get; set; } = new List<CourseHasStudent>();
     }
 }
