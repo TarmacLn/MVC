@@ -153,8 +153,8 @@ namespace MVC.Controllers {
             var course = await _context.Courses.FindAsync(model.CourseId);
             if (course == null)
             {
-                TempData["ErrorMessage"] = "Error occured while enrolling in this course";
-                return RedirectToAction(nameof(EnrollInCourse), new { studentId = model.StudentId });
+                TempData["ErrorMessage"] = "Error occured while enrolling the selected student in this course";
+                return RedirectToAction(nameof(UsersList));
             }
 
             var alreadyEnrolled = await _context.CourseHasStudents
