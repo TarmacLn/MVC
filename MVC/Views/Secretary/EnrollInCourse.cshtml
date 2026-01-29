@@ -5,7 +5,7 @@
     var errorMessage = TempData["ErrorMessage"] as string;
 }
 
-<a asp-action="Index" asp-controller="Secretary" class="btn btn-secondary">Back</a>
+<a asp-action="EnrollInCourse" asp-controller="Secretary" class="btn btn-secondary">Back</a>
 
 <br>    
 
@@ -24,6 +24,8 @@
 
 <form asp-action="EnrollInCourse" method="post">
     @Html.AntiForgeryToken()
+
+    <input type="hidden" asp-for="StudentId" />
 
      <div class="form-group mb-3">
         <label>Student</label>

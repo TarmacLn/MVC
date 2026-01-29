@@ -85,10 +85,7 @@
             <td>@user.Student?.Fullname</td>
             <td>@user.Student?.Department.ToString()</td>
             <td>
-                <form asp-action="EnrollinCourse" asp-controller="Secretary" method="post" style="display:inline;">
-                    <input type="hidden" name="userId" value="@user.Id" />
-                    <button type="submit" class="btn btn-primary btn-sm" onclick="return confirm('Are you sure you want to enroll this student in this course?');">Enroll</button>
-                </form>
+                <a asp-action="EnrollInCourse" asp-controller="Secretary" asp-route-studentId="@user.Student?.UserId" class="btn btn-primary btn-sm" style="display:inline;">Enroll</a>
             </td>
             <td>
                 <form asp-action="DeleteUser" asp-controller="Secretary" method="post" style="display:inline;">

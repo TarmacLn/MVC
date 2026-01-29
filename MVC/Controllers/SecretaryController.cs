@@ -92,13 +92,93 @@ namespace MVC.Controllers {
 
         public async Task<IActionResult> StudentCoursesList()
         {
-            var students = await _context.Courses
+            var students = await _context.Students
                 .Include(ec => ec.EnrolledCourses)
                     .ThenInclude(c => c.Course)
                 .ToListAsync();
 
                 return View(students);
         }
+
+
+        [HttpGet]
+        public async Task<IActionResult> EnrollInCourse(int studentId)
+        {
+            var student = await _context.Students.FindAsync(studentId);
+            if (student == null)
+            {
+                TempData["ErrorMessage"] = "Error occured while selecting this student";
+                return RedirectToAction(nameof(UsersList));
+            }
+
+            var allCourses = await _context.Courses.ToListAsync();  
+
+            var filteredCourses = allCourses
+                .Where(c => GetDepartmentCourseName(c.CourseId) == student.Department)
+                .ToList();
+
+            var model = new EnrollInCourseViewModel
+            {
+                StudentId = studentId,
+                StudentName = student.Fullname,
+                StudentDepartment = student.Department,
+                Courses= new SelectList(filteredCourses, "CourseId", "Title")
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EnrollInCourse(EnrollInCourseViewModel model)
+        {
+            var student = await _context.Students.FindAsync(model.StudentId);
+
+            if (!ModelState.IsValid)
+            {
+                var allCourses = await _context.Courses.ToListAsync();
+
+                var filteredCourses = allCourses
+                    .Where(c=> GetDepartmentCourseName(c.CourseId) == student!.Department)
+                    .ToList();
+                
+                model.StudentName = student?.Fullname ?? "";
+                model.StudentDepartment = student?.Department ?? "";
+                model.Courses = new SelectList(filteredCourses, "CourseId", "Title");
+
+                return View(model);
+            }
+
+            var alreadyEnrolled = await _context.CourseHasStudents
+                .AnyAsync(chs => chs.StudentId == model.StudentId && chs.CourseId == model.CourseId);
+
+            if (alreadyEnrolled)
+            {
+                TempData["ErrorMessage"] = "Student is already enrolled in this course.";
+                return RedirectToAction(nameof(EnrollInCourse), new { studentId = model.StudentId });
+            }
+
+            try
+            {
+                await _context.Database.ExecuteSqlRawAsync(
+                    "INSERT INTO course_has_student (course_id, student_id) VALUES ({0}, {1})",
+                    model.CourseId, model.StudentId);
+                
+                TempData["SuccessMessage"] = "Student enrolled in course successfully!";
+                return RedirectToAction(nameof(UsersList));
+            }
+            catch (Exception e)
+            {
+                TempData["ErrorMessage"] = "Error while enrolling student: " + e.Message;
+                return RedirectToAction(nameof(EnrollInCourse), new { studentId = model.StudentId });
+            }
+
+        }
+
+        
+
+        
+
 
         // User Management Functions
 
@@ -319,4 +399,5 @@ namespace MVC.Controllers {
             return RedirectToAction(nameof(UsersList));
         }
     }
+
 }
