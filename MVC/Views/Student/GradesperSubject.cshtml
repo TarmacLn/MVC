@@ -1,0 +1,29 @@
+@model IEnumerable<MVC.Models.CourseHasStudent>
+
+@{
+    ViewData["Title"] = "Βαθμολογίες ανά Μάθημα";
+}
+
+<div>
+    <h2>Βαθμολογίες ανά Μάθημα</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Τίτλος Μαθήματος</th>
+                <th>Εξάμηνο</th>
+                <th>Βαθμός</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Course.Title</td> <td>@item.Course.Semester</td>
+                    <td>
+                        <span>@item.Grade</span>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
