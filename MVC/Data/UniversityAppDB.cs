@@ -58,6 +58,9 @@ namespace MVC.Data
                 .WithMany()
                 .HasForeignKey(c => c.ProfessorId)
                 .OnDelete(DeleteBehavior.SetNull);
+            modelBuilder.Entity<CourseHasStudent>().ToTable("course_has_student");
+            modelBuilder.Entity<CourseHasStudent>()
+                .HasKey(chs => new { chs.CourseId, chs.StudentId });           
         }
     }
 }
