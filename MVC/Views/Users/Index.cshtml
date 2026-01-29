@@ -1,0 +1,24 @@
+@model IEnumerable<MVC.Models.User>
+
+<h1>Users</h1>
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Username</th>
+            <th>Password</th>
+            <th>User Type</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var user in Model)
+    {
+        <tr>
+            <td>@user.Id</td>
+            <td>@user.Username</td>
+            <td>@user.Password</td>
+            <td>@user.UserType.ToString()</td>
+        </tr>
+    }
+    </tbody>
+</table>

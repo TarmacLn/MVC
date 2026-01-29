@@ -1,0 +1,24 @@
+@* @model IEnumerable<MVC.Models.CourseGrade> *@ 
+
+<h2>My Grades</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Semester</th>
+            <th>Course Title</th>
+            <th>Grade</th>
+            <th>Is Final</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Course.Semester</td>
+                <td>@item.Course.CourseTitle</td>
+                <td>@item.Grade</td>
+                <td>@(item.IsFinal ? "Yes" : "No")</td>
+            </tr>
+        }
+    </tbody>
+</table>
