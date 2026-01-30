@@ -1,4 +1,5 @@
 using System.Transactions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -7,6 +8,7 @@ using MVC.Data;
 using MVC.Models;
 
 namespace MVC.Controllers {
+    [Authorize(Roles = "Secretary")]
     public class SecretaryController : Controller 
     {
         private readonly UniversityAppDB _context;

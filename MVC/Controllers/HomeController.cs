@@ -95,7 +95,14 @@ namespace MVC.Controllers
             {
                 return Redirect(returnUrl);
             }
-            return RedirectToAction("Index", "Users");
+
+            return user.UserType switch
+            {
+                UserType.Secretary => RedirectToAction("Index", "Secretary"),
+                UserType.Professor => RedirectToAction("Index", "Professor"),
+                UserType.Student => RedirectToAction("Index", "Student"),
+                _ => RedirectToAction("Index", "Home")
+            };
         }
 
         [HttpPost]

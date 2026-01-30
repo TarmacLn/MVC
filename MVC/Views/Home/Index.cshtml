@@ -1,8 +1,57 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Welcome";
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <h1 class="display-4">Welcome to University Portal</h1>
+    <p class="lead">Manage your academic journey</p>
+</div>
+
+<br>
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Get Started</h5>
+                <p class="card-text">Sign in to access your personalized dashboard and manage courses, grades, and more.</p>
+                <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                    <a asp-controller="Home" asp-action="Login" class="btn btn-primary btn-lg">Login</a>
+                    <a asp-controller="Home" asp-action="SignUp" class="btn btn-outline-primary btn-lg">Sign Up</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<br>
+
+<div class="row mt-4">
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <i class="bi bi-mortarboard" style="font-size: 3rem; color: #0d6efd;"></i>
+                <h5 class="card-title mt-3">For Students</h5>
+                <p class="card-text">View your grades, track academic progress, and manage course enrollments.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <i class="bi bi-person-badge" style="font-size: 3rem; color: #198754;"></i>
+                <h5 class="card-title mt-3">For Professors</h5>
+                <p class="card-text">Manage your courses and track student performance.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <i class="bi bi-gear" style="font-size: 3rem; color: #dc3545;"></i>
+                <h5 class="card-title mt-3">For Secretaries</h5>
+                <p class="card-text">Administer users, courses, and student enrollments.</p>
+            </div>
+        </div>
+    </div>
 </div>

@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MVC.Data;
@@ -6,6 +7,7 @@ using System.Security.Claims;
 
 namespace MVC.Controllers
 {
+    [Authorize(Roles = "Student")]
     public class StudentController : Controller
     {
 
