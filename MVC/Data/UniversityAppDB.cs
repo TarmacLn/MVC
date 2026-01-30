@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MVC.Models;
 
 namespace MVC.Data
@@ -13,9 +14,21 @@ namespace MVC.Data
         public DbSet<Student> Students { get; set; }
         public DbSet<Professor> Professors { get; set; }
         public DbSet<Secretary> Secretaries { get; set; }
+        public DbSet<Course> Courses { get; set; }
+        public DbSet<CourseHasStudent> CourseHasStudents { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            // Department converter for display and storage
+            var departmentConverter = new ValueConverter<Department, string>(
+                v => v == Department.ComputerScience ? "Computer Science" :
+                     v == Department.BusinessAdministration ? "Business Administration" :
+                     v == Department.Sociology ? "Sociology" : "Computer Science",
+                v => v == "Computer Science" ? Department.ComputerScience :
+                     v == "Business Administration" ? Department.BusinessAdministration :
+                     v == "Sociology" ? Department.Sociology : Department.ComputerScience
+            );
+
             modelBuilder.Entity<User>().ToTable("users");
             modelBuilder.Entity<User>()
                 .Property(u => u.UserType)
@@ -25,6 +38,9 @@ namespace MVC.Data
             modelBuilder.Entity<Student>()
                 .HasKey(s => s.UserId);
             modelBuilder.Entity<Student>()
+                .Property(s => s.Department)
+                .HasConversion(departmentConverter);
+            modelBuilder.Entity<Student>()
                 .HasOne(s => s.User)
                 .WithOne(u => u.Student)
                 .HasForeignKey<Student>(s => s.UserId)
@@ -33,6 +49,9 @@ namespace MVC.Data
             modelBuilder.Entity<Professor>().ToTable("professors");
             modelBuilder.Entity<Professor>()
                 .HasKey(p => p.UserId);
+            modelBuilder.Entity<Professor>()
+                .Property(p => p.Department)
+                .HasConversion(departmentConverter);
             modelBuilder.Entity<Professor>()
                 .HasOne(p => p.User)
                 .WithOne(u => u.Professor)
@@ -47,6 +66,18 @@ namespace MVC.Data
                 .WithOne(u => u.Secretary)
                 .HasForeignKey<Secretary>(s => s.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Course>().ToTable("courses");
+            modelBuilder.Entity<Course>()
+                .HasKey(c => c.CourseId);
+            modelBuilder.Entity<Course>()
+                .HasOne(c => c.Professor)
+                .WithMany()
+                .HasForeignKey(c => c.ProfessorId)
+                .OnDelete(DeleteBehavior.SetNull);
+            modelBuilder.Entity<CourseHasStudent>().ToTable("course_has_student");
+            modelBuilder.Entity<CourseHasStudent>()
+                .HasKey(chs => new { chs.CourseId, chs.StudentId });           
         }
     }
 }

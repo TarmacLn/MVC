@@ -15,10 +15,12 @@ namespace MVC.Models
 
         [Column("department")]
         [Required]
-        public string Department { get; set; } = null!;
+        public Department Department { get; set; } = Department.ComputerScience;
 
         // Navigation property
         [ForeignKey("UserId")]
         public User? User { get; set; }
+
+        public ICollection<CourseHasStudent> EnrolledCourses { get; set; } = new List<CourseHasStudent>();
     }
 }

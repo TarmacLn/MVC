@@ -1,0 +1,76 @@
+@model MVC.Models.AddProfessorViewModel
+
+@{
+    var successMessage = TempData["SuccessMessage"] as string;
+    var errorMessage = TempData["ErrorMessage"] as string;
+}
+
+<a asp-action="Index" asp-controller="Secretary" class="btn btn-secondary">Back</a>
+
+<br>
+
+<h1>Add Professor</h1>
+
+@if (!string.IsNullOrEmpty(successMessage)) {
+    <div class="alert alert-success" role="alert">@successMessage</div>
+}
+
+@if (!string.IsNullOrEmpty(errorMessage)) {
+    <div class="alert alert-danger" role="alert">@errorMessage</div>
+}
+
+
+<br>
+
+<form asp-action="AddProfessor" method="post">
+    @Html.AntiForgeryToken()
+
+    <br>
+
+    <div class="form-group">
+        <label asp-for="Username">Username</label>
+        <input asp-for="Username" placeholder="Username" class="form-control" required />
+        <span asp-validation-for="Username" class="text-danger"></span>
+    </div>
+
+    <br>
+    
+    <div class="form-group">
+        <label asp-for="Password">Password</label>
+        <input asp-for="Password" placeholder="Password" class="form-control" required />
+        <span asp-validation-for="Password" class="text-danger"></span>
+    </div>
+
+    <br>
+
+    <div class="form-group">
+        <label asp-for="AFM">AFM</label>
+        <input asp-for="AFM" placeholder="AFM" class="form-control" required />
+        <span asp-validation-for="AFM" class="text-danger"></span>
+    </div>
+
+    <br>
+
+    <div class="form-group">
+        <label asp-for="Fullname">Full Name</label>
+        <input asp-for="Fullname" placeholder="Full Name" class="form-control" required />
+        <span asp-validation-for="Fullname" class="text-danger"></span>
+
+    </div>
+
+    <br>
+
+    <div class="form-group">
+        <label asp-for="Department"></label>
+        <select asp-for="Department" class="form-control" asp-items="Html.GetEnumSelectList<MVC.Models.Department>()">
+            <option value="">Select Department</option>
+        </select>
+        <span asp-validation-for="Department" class="text-danger"></span>
+    </div>
+
+    <br>
+    
+    <button type="submit" class="btn btn-primary">Confirm</button>
+</form>
+
+<div asp-validation-summary="All" class="text-danger mt-2"></div>

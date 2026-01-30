@@ -1,0 +1,105 @@
+@using MVC.Models
+@model IEnumerable<MVC.Models.Student>
+
+<a asp-action="Index" asp-controller="Secretary" class="btn btn-secondary">Back</a>
+
+<br>
+
+<h2>Students Courses List</h2>
+<p> View all the courses each student is enrolled in, organized by department </p>
+
+<br>
+
+<h3>Computer Science Students</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Student ID</th>
+            <th>Student Name</th>
+            <th>Enrolled Courses</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var student in Model.Where(s => s.Department == Department.ComputerScience))
+    {
+        <tr>
+            <td>@student.UserId</td>
+            <td>@student.Fullname</td>
+            <td>
+                @if (student.EnrolledCourses.Any())
+                {
+                    @string.Join(", ", student.EnrolledCourses.Select(ec => $"{ec.Course.Title} (Sem {ec.Course.Semester})"))
+                }
+                else
+                {
+                    <em>No enrolled courses</em>
+                }
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+<br>
+
+<h3>Sociology Students</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Student ID</th>
+            <th>Student Name</th>
+            <th>Enrolled Courses</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var student in Model.Where(s => s.Department == Department.Sociology))
+    {
+        <tr>
+            <td>@student.UserId</td>
+            <td>@student.Fullname</td>
+            <td>
+                @if (student.EnrolledCourses.Any())
+                {
+                    @string.Join(", ", student.EnrolledCourses.Select(ec => $"{ec.Course.Title} (Sem {ec.Course.Semester})"))
+                }
+                else
+                {
+                    <em>No enrolled courses</em>
+                }
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+<br>
+
+<h3>Business Administration Students</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Student ID</th>
+            <th>Student Name</th>
+            <th>Enrolled Courses</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var student in Model.Where(s => s.Department == Department.BusinessAdministration))
+    {
+        <tr>
+            <td>@student.UserId</td>
+            <td>@student.Fullname</td>
+            <td>
+                @if (student.EnrolledCourses.Any())
+                {
+                    @string.Join(", ", student.EnrolledCourses.Select(ec => $"{ec.Course.Title} (Sem {ec.Course.Semester})"))
+                }
+                else
+                {
+                    <em>No enrolled courses</em>
+                }
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

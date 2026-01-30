@@ -1,0 +1,110 @@
+@using MVC.Models
+@model IEnumerable<MVC.Models.Course>
+
+<a asp-action="Index" asp-controller="Secretary" class="btn btn-secondary">Back</a>
+
+<br>
+
+<h2>All Courses</h2>
+<p> View all courses and their information organized by department. Courses without an assigned professor are listed last</p>
+
+<br>
+
+<h3>Computer Science</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Semester</th>
+            <th>Professor</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var course in Model.Where(c => c.Professor != null && c.Professor.Department == Department.ComputerScience))
+    {
+        <tr>
+            <td>@course.CourseId</td>
+            <td>@course.Title</td>
+            <td>@course.Semester</td>
+            <td>@course.Professor?.Fullname</td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+<br>
+
+<h3>Sociology</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Semester</th>
+            <th>Professor</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach( var course in Model.Where(c => c.Professor != null && c.Professor.Department == Department.Sociology))
+    {
+        <tr>
+            <td>@course.CourseId</td>
+            <td>@course.Title</td>
+            <td>@course.Semester</td>
+            <td>@course.Professor?.Fullname</td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+<br>
+
+<h3>Business Administration</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Semester</th>
+            <th>Professor</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var course in Model.Where(c => c.Professor != null && c.Professor.Department == Department.BusinessAdministration))
+    {
+        <tr>
+            <td>@course.CourseId</td>
+            <td>@course.Title</td>
+            <td>@course.Semester</td>
+            <td>@course.Professor?.Fullname</td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+<br>
+
+<h3>Unassigned Courses</h3>
+<p><em>Courses without an assigned professor</em></p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Semester</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var course in Model.Where(c => c.Professor == null))
+    {
+        <tr>
+            <td>@course.CourseId</td>
+            <td>@course.Title</td>
+            <td>@course.Semester</td>
+        </tr>
+    }
+    </tbody>
+</table>
+
