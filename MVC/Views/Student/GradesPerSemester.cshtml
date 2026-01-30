@@ -1,0 +1,84 @@
+@model IEnumerable<MVC.Models.CourseHasStudent>
+
+@{
+    ViewData["Title"] = "Grades per Semester";
+}
+
+<a asp-action="Index" asp-controller="Student" class="btn btn-secondary">Back</a>
+
+<br>
+
+<h2>Grades per Semester</h2>
+<p>View all your grades organized by semester. Multiple grades per course are shown separately.</p>
+
+<br>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">
+        <p>You have no grades recorded yet.</p>
+    </div>
+}
+else
+{
+    var groupedBySemester = Model.GroupBy(g => g.Course.Semester);
+
+    @foreach (var semesterGroup in groupedBySemester.OrderBy(g => g.Key))
+    {
+        <h3>Semester @semesterGroup.Key</h3>
+        
+        var coursesInSemester = semesterGroup.GroupBy(g => new { g.Course.CourseId, g.Course.Title });
+        
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Course</th>
+                    <th>Grade</th>
+                    <th>Description</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var courseGroup in coursesInSemester.OrderBy(c => c.Key.Title))
+                {
+                    var gradesList = courseGroup.OrderByDescending(g => g.IsFinal).ThenBy(g => g.Id).ToList();
+                    var rowSpan = gradesList.Count;
+                    var firstRow = true;
+                    
+                    @foreach (var grade in gradesList)
+                    {
+                        <tr class="@(grade.IsFinal == true ? "table-success" : "")">
+                            @if (firstRow)
+                            {
+                                <td rowspan="@rowSpan" class="align-middle"><strong>@courseGroup.Key.Title</strong></td>
+                                firstRow = false;
+                            }
+                            <td>
+                                @if (grade.Grade.HasValue)
+                                {
+                                    <strong>@grade.Grade</strong>
+                                }
+                                else
+                                {
+                                    <em>Not graded</em>
+                                }
+                            </td>
+                            <td>@(grade.Description ?? "-")</td>
+                            <td>
+                                @if (grade.IsFinal == true)
+                                {
+                                    <span class="badge bg-success">Final</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">Partial</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+        <br>
+    }
+}

@@ -119,15 +119,23 @@ namespace MVC.Controllers {
 
             if (alreadyEnrolled)
             {
-                TempData["ErrorMessage"] = "Student is already enrolled in this course.";
-                return RedirectToAction(nameof(EnrollInCourse), new { studentId = model.StudentId });
+                TempData["SuccessMessage"] = "Student is already enrolled in this course.";
+                return RedirectToAction(nameof(UsersList));
             }
 
             try
             {
-                await _context.Database.ExecuteSqlRawAsync(
-                    "INSERT INTO course_has_student (course_id, student_id) VALUES ({0}, {1})",
-                    model.CourseId, model.StudentId);
+                var enrollment = new CourseHasStudent
+                {
+                    CourseId = model.CourseId,
+                    StudentId = model.StudentId,
+                    Grade = null,
+                    IsFinal = false,
+                    Description = "Initial enrollment"
+                };
+                
+                _context.CourseHasStudents.Add(enrollment);
+                await _context.SaveChangesAsync();
                 
                 TempData["SuccessMessage"] = "Student enrolled in course successfully!";
                 return RedirectToAction(nameof(UsersList));

@@ -1,0 +1,105 @@
+@model IEnumerable<MVC.Models.CourseHasStudent>
+
+@{
+    ViewData["Title"] = "Total Average";
+    var finalGrades = Model.Where(g => g.Grade.HasValue).ToList();
+    var average = finalGrades.Any() ? finalGrades.Average(g => g.Grade!.Value) : 0;
+    var passedCourses = finalGrades.Where(g => g.Grade >= 5).Count();
+    var failedCourses = finalGrades.Where(g => g.Grade < 5).Count();
+}
+
+<a asp-action="Index" asp-controller="Student" class="btn btn-secondary">Back</a>
+
+<br>
+
+<h2>Total Average</h2>
+<p>Your overall academic performance based on final grades only.</p>
+
+<br>
+
+@if (!finalGrades.Any())
+{
+    <div class="alert alert-info">
+        <p>You have no final grades recorded yet.</p>
+    </div>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="card-title">Total Average</h5>
+                    <h1 class="display-3 @(average >= 5 ? "text-success" : "text-danger")">
+                        @average.ToString("F2")
+                    </h1>
+                    <p class="card-text">
+                        @if (average >= 5)
+                        {
+                            <span class="badge bg-success">Passing</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-danger">Below Passing</span>
+                        }
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card text-center bg-success text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Passed Courses</h5>
+                    <h1 class="display-3">@passedCourses</h1>
+                    <p class="card-text">Courses with grade &gt;= 5</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card text-center bg-danger text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Failed Courses</h5>
+                    <h1 class="display-3">@failedCourses</h1>
+                    <p class="card-text">Courses with grade &lt; 5</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <br>
+    <br>
+
+    <h3>All Final Grades</h3>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Course</th>
+                <th>Semester</th>
+                <th>Final Grade</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var grade in finalGrades.OrderBy(g => g.Course.Semester).ThenBy(g => g.Course.Title))
+            {
+                <tr class="@(grade.Grade >= 5 ? "table-success" : "table-danger")">
+                    <td>@grade.Course.Title</td>
+                    <td>@grade.Course.Semester</td>
+                    <td><strong>@grade.Grade</strong></td>
+                    <td>
+                        @if (grade.Grade >= 5)
+                        {
+                            <span class="badge bg-success">Passed</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-danger">Failed</span>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

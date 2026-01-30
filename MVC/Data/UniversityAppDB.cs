@@ -77,7 +77,17 @@ namespace MVC.Data
                 .OnDelete(DeleteBehavior.SetNull);
             modelBuilder.Entity<CourseHasStudent>().ToTable("course_has_student");
             modelBuilder.Entity<CourseHasStudent>()
-                .HasKey(chs => new { chs.CourseId, chs.StudentId });           
+                .HasKey(chs => chs.Id);
+            modelBuilder.Entity<CourseHasStudent>()
+                .HasOne(chs => chs.Course)
+                .WithMany()
+                .HasForeignKey(chs => chs.CourseId)
+                .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<CourseHasStudent>()
+                .HasOne(chs => chs.Student)
+                .WithMany(s => s.EnrolledCourses)
+                .HasForeignKey(chs => chs.StudentId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

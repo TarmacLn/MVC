@@ -1,24 +1,46 @@
-<div>
-    <h2>Welcome!</h2>
-    <p> Use the buttons below to manage professor and student users as well as their courses in the system </p>
+@{
+    ViewData["Title"] = "Secretary Portal";
+}
 
-    <br>
+<div class="text-center">
+    <h1 class="display-4">Secretary Portal</h1>
+    <p>Manage professors, students, and course assignments</p>
+</div>
 
-    <h5 style="margin-bottom: 10px;" class="card-title"> User Management & Course Management</h5>
+<br>
 
-    <div style="display: flex; gap: 10px;">
-        <a asp-controller="Secretary" asp-action="UsersList" class="btn btn-outline-primary">Users List</a>
-        <a asp-controller="Secretary" asp-action="AddProfessor" class="btn btn-outline-primary">Add Professor</a>
-        <a asp-controller="Secretary" asp-action="AddStudent" class="btn btn-outline-primary">Add Student</a>
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <h4 class="mb-3">User Management</h4>
+        <div class="d-grid gap-3 mb-4">
+            <a asp-action="UsersList" asp-controller="Secretary" class="btn btn-outline-primary btn-lg">
+                <i class="bi bi-people"></i> Users List
+            </a>
+            
+            <a asp-action="AddProfessor" asp-controller="Secretary" class="btn btn-outline-primary btn-lg">
+                <i class="bi bi-person-plus"></i> Add Professor
+            </a>
+            
+            <a asp-action="AddStudent" asp-controller="Secretary" class="btn btn-outline-primary btn-lg">
+                <i class="bi bi-person-plus-fill"></i> Add Student
+            </a>
+        </div>
+
+        <h4 class="mb-3">Course Management</h4>
+        <div class="d-grid gap-3">
+            <a asp-action="CoursesList" asp-controller="Secretary" class="btn btn-outline-success btn-lg">
+                <i class="bi bi-journal-text"></i> Courses List
+            </a>
+            
+            <a asp-action="StudentsCoursesList" asp-controller="Secretary" class="btn btn-outline-success btn-lg">
+                <i class="bi bi-mortarboard"></i> Students Courses List
+            </a>
+        </div>
     </div>
+</div>
 
-    <br>
+<br>
 
-    <h5 style="margin-bottom: 10px;" class="card-text"> Course Management </h5>
-
-    <div style="display: flex; gap: 10px;">
-        <a asp-controller="Secretary" asp-action="CoursesList" class="btn btn-outline-success">Courses List</a>
-        <a asp-controller="Secretary" asp-action="StudentsCoursesList" class="btn btn-outline-success">Students Courses List</a>
-    </div>
-
+<div class="text-center">
+    <a asp-action="Index" asp-controller="Users" class="btn btn-secondary">Back to Main Menu</a>
 </div>

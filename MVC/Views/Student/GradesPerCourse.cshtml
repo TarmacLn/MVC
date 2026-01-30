@@ -1,0 +1,68 @@
+@model IEnumerable<MVC.Models.CourseHasStudent>
+
+@{
+    ViewData["Title"] = "Grades per Course";
+}
+
+<a asp-action="Index" asp-controller="Student" class="btn btn-secondary">Back</a>
+
+<br>
+
+<h2>Grades per Course</h2>
+<p>View all your grades organized by course. Multiple grades per course are shown separately.</p>
+
+<br>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">
+        <p>You have no grades recorded yet.</p>
+    </div>
+}
+else
+{
+    var groupedByCourse = Model.GroupBy(g => new { g.Course.CourseId, g.Course.Title, g.Course.Semester });
+
+    @foreach (var courseGroup in groupedByCourse.OrderBy(g => g.Key.Title))
+    {
+        <h4>@courseGroup.Key.Title (Semester @courseGroup.Key.Semester)</h4>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Grade</th>
+                    <th>Description</th>
+                    <th>Is Final</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var grade in courseGroup.OrderByDescending(g => g.IsFinal).ThenBy(g => g.Id))
+                {
+                    <tr class="@(grade.IsFinal == true ? "table-success" : "")">
+                        <td>
+                            @if (grade.Grade.HasValue)
+                            {
+                                <strong>@grade.Grade</strong>
+                            }
+                            else
+                            {
+                                <em>Not graded</em>
+                            }
+                        </td>
+                        <td>@(grade.Description ?? "-")</td>
+                        <td>
+                            @if (grade.IsFinal == true)
+                            {
+                                <span class="badge bg-success">Final</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">Partial</span>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <br>
+    }
+}

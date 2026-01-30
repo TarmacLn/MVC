@@ -1,6 +1,7 @@
 @model IEnumerable<MVC.Models.User>
 
 @{
+    ViewData["Title"] = "Users List";
     var successMessage = TempData["SuccessMessage"] as string;
     var errorMessage = TempData["ErrorMessage"] as string;
 }
