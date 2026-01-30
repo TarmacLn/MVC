@@ -1,14 +1,16 @@
+@using MVC.Models
 @model IEnumerable<MVC.Models.Student>
 
 <a asp-action="Index" asp-controller="Secretary" class="btn btn-secondary">Back</a>
 
 <br>
 
-<h2>Students' Enrolled Courses</h2>
+<h2>Students Courses List</h2>
+<p> View all the courses each student is enrolled in, organized by department </p>
 
 <br>
 
-<h2>Computer Science Students</h2>
+<h3>Computer Science Students</h3>
 <table class="table">
     <thead>
         <tr>
@@ -18,7 +20,7 @@
         </tr>
     </thead>
     <tbody>
-    @foreach (var student in Model.Where(s => s.Department == "Computer Science"))
+    @foreach (var student in Model.Where(s => s.Department == Department.ComputerScience))
     {
         <tr>
             <td>@student.UserId</td>
@@ -40,7 +42,7 @@
 
 <br>
 
-<h2>Sociology Students</h2>
+<h3>Sociology Students</h3>
 <table class="table">
     <thead>
         <tr>
@@ -50,7 +52,7 @@
         </tr>
     </thead>
     <tbody>
-    @foreach (var student in Model.Where(s => s.Department == "Sociology"))
+    @foreach (var student in Model.Where(s => s.Department == Department.Sociology))
     {
         <tr>
             <td>@student.UserId</td>
@@ -72,7 +74,7 @@
 
 <br>
 
-<h2>Business Administration Students</h2>
+<h3>Business Administration Students</h3>
 <table class="table">
     <thead>
         <tr>
@@ -82,7 +84,7 @@
         </tr>
     </thead>
     <tbody>
-    @foreach (var student in Model.Where(s => s.Department == "Business Administration"))
+    @foreach (var student in Model.Where(s => s.Department == Department.BusinessAdministration))
     {
         <tr>
             <td>@student.UserId</td>

@@ -14,7 +14,7 @@ namespace MVC.Models
 
         // Only for display
         public string ProfessorName { get; set; } = string.Empty;
-        public string ProfessorDepartment { get; set; } = string.Empty;
+        public Department ProfessorDepartment { get; set; } = Department.ComputerScience;
 
         // For the dropdowns
         public SelectList? Courses { get; set; }

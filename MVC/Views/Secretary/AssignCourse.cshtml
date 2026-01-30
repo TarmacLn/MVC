@@ -19,7 +19,6 @@
     <div class="alert alert-danger" role="alert">@errorMessage</div>
 }
 
-
 <br>
 
 <form asp-action="AssignCourse" method="post">
@@ -27,15 +26,21 @@
 
     <input type="hidden" asp-for="ProfessorId" />
 
+    <br>
+
     <div class="form-group mb-3">
         <label>Professor</label>
         <input type="text" class="form-control" value="@Model.ProfessorName" readonly />
     </div>
 
+    <br>
+
     <div class="form-group mb-3">
         <label>Department</label>
-        <input type="text" class="form-control" value="@Model.ProfessorDepartment" readonly />
+        <input type="text" class="form-control" value="@Model.ProfessorDepartment.ToString()" readonly />
     </div>
+
+    <br>
 
     <div class="form-group mb-3">
         <label asp-for="CourseId">Department Courses</label>
@@ -46,6 +51,7 @@
     </div>
 
     <br>
+
     <button type="submit" class="btn btn-primary" onclick="return confirm('Are you sure you want to assign this course?');">Assign Course</button>
 </form>
 

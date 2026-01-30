@@ -16,55 +16,6 @@ namespace MVC.Controllers {
             _context = context;
         }
 
-        private static readonly Dictionary<int, string> CourseDepartmentMapping = new()
-        {
-            // Computer Science
-            { 1, "Computer Science" },
-            { 2, "Computer Science" },
-            { 3, "Computer Science" },
-            { 4, "Computer Science" },
-            { 5, "Computer Science" },
-            { 6, "Computer Science" },
-            {7, "Computer Science" },
-            {8, "Computer Science" },
-
-            // Sociology
-            { 9, "Sociology" },
-            { 10, "Sociology" },
-            { 11, "Sociology" },
-            { 12, "Sociology" },
-            { 13, "Sociology" },
-            { 14, "Sociology" },
-            {15, "Sociology" },
-            {16, "Sociology" },
-
-            // Business Administration
-            { 17, "Business Administration" },
-            { 18, "Business Administration" },
-            { 19, "Business Administration" },
-            { 20, "Business Administration" },
-            { 21, "Business Administration" },
-            { 22, "Business Administration" },
-            {23, "Business Administration" },
-            {24, "Business Administration" },
-        };
-
-        private string GetDepartmentCourseName(int courseId)
-        {
-            return CourseDepartmentMapping.TryGetValue(courseId, out var dept) ? dept : "Unknown";
-        }
-
-        private string GetDepartmentValue(Department department)
-        {
-            return department switch
-            {
-                Department.ComputerScience => "Computer Science",
-                Department.BusinessAdministration => "Business Administration",
-                Department.Sociology => "Sociology",
-                _ => "Computer Science"
-            };
-        }
-
         public IActionResult Index()
         {
             return View();
@@ -111,10 +62,13 @@ namespace MVC.Controllers {
                 return RedirectToAction(nameof(UsersList));
             }
 
-            var allCourses = await _context.Courses.ToListAsync();  
+            var allCourses = await _context.Courses
+                .Include(c => c.Professor)
+                .Where(c => c.Professor != null)
+                .ToListAsync();
 
-            var filteredCourses = allCourses
-                .Where(c => GetDepartmentCourseName(c.CourseId) == student.Department)
+            var departmentCourses = allCourses
+                .Where(c => c.Professor!.Department == student.Department)
                 .ToList();
 
             var model = new EnrollInCourseViewModel
@@ -122,7 +76,7 @@ namespace MVC.Controllers {
                 StudentId = studentId,
                 StudentName = student.Fullname,
                 StudentDepartment = student.Department,
-                Courses= new SelectList(filteredCourses, "CourseId", "Title")
+                Courses= new SelectList(departmentCourses, "CourseId", "Title")
             };
 
             return View(model);
@@ -136,15 +90,18 @@ namespace MVC.Controllers {
 
             if (!ModelState.IsValid)
             {
-                var allCourses = await _context.Courses.ToListAsync();
-
-                var filteredCourses = allCourses
-                    .Where(c=> GetDepartmentCourseName(c.CourseId) == student!.Department)
+                var allCourses = await _context.Courses
+                    .Include(c => c.Professor)
+                    .Where(c => c.Professor != null)
+                    .ToListAsync();
+                
+                var departmentCourses = allCourses
+                    .Where(c => c.Professor!.Department == student!.Department)
                     .ToList();
                 
                 model.StudentName = student?.Fullname ?? "";
-                model.StudentDepartment = student?.Department ?? "";
-                model.Courses = new SelectList(filteredCourses, "CourseId", "Title");
+                model.StudentDepartment = student?.Department ?? Department.ComputerScience;
+                model.Courses = new SelectList(departmentCourses, "CourseId", "Title");
 
                 return View(model);
             }
@@ -153,8 +110,8 @@ namespace MVC.Controllers {
             var course = await _context.Courses.FindAsync(model.CourseId);
             if (course == null)
             {
-                TempData["ErrorMessage"] = "Error occured while enrolling in this course";
-                return RedirectToAction(nameof(EnrollInCourse), new { studentId = model.StudentId });
+                TempData["ErrorMessage"] = "Error occured while enrolling the selected student in this course";
+                return RedirectToAction(nameof(UsersList));
             }
 
             var alreadyEnrolled = await _context.CourseHasStudents
@@ -229,10 +186,9 @@ namespace MVC.Controllers {
                 }
 
                 // Insert the new user to the professors table along with his additional details
-                var departmentName = GetDepartmentValue(model.Department);
                 await _context.Database.ExecuteSqlRawAsync(
                     "INSERT INTO professors (user_id, afm, fullname, department) VALUES ({0}, {1}, {2}, {3}::department)",
-                    newUser.Id, model.AFM, model.Fullname, departmentName);
+                    newUser.Id, model.AFM, model.Fullname, model.Department.ToString());
 
                 TempData["SuccessMessage"] = "New professor added successfully!";
                 return RedirectToAction(nameof(AddProfessor));
@@ -278,10 +234,9 @@ namespace MVC.Controllers {
                 }
 
                 // Insert the new user to the students table along with his additional details
-                var departmentName = GetDepartmentValue(model.Department);
                 await _context.Database.ExecuteSqlRawAsync(
                     "INSERT INTO students (user_id,fullname, department) VALUES ({0}, {1}, {2}::department)",
-                    newUser.Id, model.Fullname, departmentName);
+                    newUser.Id, model.Fullname, model.Department.ToString());
 
                 TempData["SuccessMessage"] = "New student added successfully!";
                 return RedirectToAction(nameof(AddStudent));
@@ -343,26 +298,24 @@ namespace MVC.Controllers {
         [HttpGet]
         public async Task<IActionResult> AssignCourse(int professorId)
         {
-            var professors = await _context.Professors.FirstOrDefaultAsync(p => p.UserId == professorId);
+            var professor = await _context.Professors.FirstOrDefaultAsync(p => p.UserId == professorId);
 
-            if (professors == null)
+            if (professor == null)
             {
                 TempData["ErrorMessage"] = "Error occured while selecting this professor";
                 return RedirectToAction(nameof(UsersList));
             }
 
-            var allCourses = await _context.Courses.ToListAsync(); 
-
-            var filteredCourses = allCourses
-                .Where(c => GetDepartmentCourseName(c.CourseId) == professors.Department)
-                .ToList();
+            var availableCourses = await _context.Courses
+                .Where(c => c.ProfessorId == null)
+                .ToListAsync();
             
             var model = new AssignCourseViewModel
             {
                 ProfessorId = professorId,
-                ProfessorName = professors.Fullname,
-                ProfessorDepartment = professors.Department,
-                Courses= new SelectList(filteredCourses, "CourseId", "Title")
+                ProfessorName = professor.Fullname,
+                ProfessorDepartment = professor.Department,
+                Courses = new SelectList(availableCourses, "CourseId", "Title")
             };
 
             return View(model);
@@ -376,15 +329,13 @@ namespace MVC.Controllers {
 
             if (!ModelState.IsValid)
             {
-                var allCourses = await _context.Courses.ToListAsync();
-                
-                var filteredCourses = allCourses
-                    .Where(c=> GetDepartmentCourseName(c.CourseId) == professor!.Department)
-                    .ToList();
+                var availableCourses = await _context.Courses
+                    .Where(c => c.ProfessorId == null)
+                    .ToListAsync();
                 
                 model.ProfessorName = professor?.Fullname ?? "";
-                model.ProfessorDepartment = professor?.Department ?? "";
-                model.Courses = new SelectList(filteredCourses, "CourseId", "Title");
+                model.ProfessorDepartment = professor?.Department ?? Department.ComputerScience;
+                model.Courses = new SelectList(availableCourses, "CourseId", "Title");
 
                 return View(model);
             }
@@ -397,19 +348,12 @@ namespace MVC.Controllers {
                 return RedirectToAction(nameof(UsersList));
             }
 
-            if (course.ProfessorId == model.ProfessorId)
-            {
-                TempData["ErrorMessage"] = "This course is already assigned to this professor";
-                return RedirectToAction(nameof(AssignCourse), new { professorId = model.ProfessorId });
-            }
-
             if (course.ProfessorId != null)
             {
                 TempData["ErrorMessage"] = "This course is already assigned to another professor";
                 return RedirectToAction(nameof(AssignCourse), new { professorId = model.ProfessorId });
             }
 
-            // Reassign course to the selected professor
             course.ProfessorId = model.ProfessorId;
             await _context.SaveChangesAsync();
         
