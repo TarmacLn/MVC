@@ -80,7 +80,7 @@ namespace MVC.Data
                 .HasKey(chs => chs.Id);
             modelBuilder.Entity<CourseHasStudent>()
                 .HasOne(chs => chs.Course)
-                .WithMany()
+                .WithMany(c => c.CourseHasStudents)
                 .HasForeignKey(chs => chs.CourseId)
                 .OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<CourseHasStudent>()

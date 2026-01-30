@@ -22,6 +22,8 @@ namespace MVC.Models
 
         // Navigation property
         [ForeignKey("ProfessorId")]
-        public Professor? Professor { get; set; } 
+        public Professor? Professor { get; set; }
+
+        public ICollection<CourseHasStudent> CourseHasStudents { get; set; } = new List<CourseHasStudent>();
     }
 }
