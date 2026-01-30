@@ -1,0 +1,69 @@
+@model MVC.Models.AddGradeViewModel
+
+@{
+    ViewData["Title"] = "Add Grade";
+    var successMessage = TempData["SuccessMessage"] as string;
+    var errorMessage = TempData["ErrorMessage"] as string;
+}
+
+<a asp-action="CoursesList" asp-controller="Professor" class="btn btn-secondary">Back</a>
+
+<br>
+
+<h1>Add Grade</h1>
+
+@if (!string.IsNullOrEmpty(successMessage)) {
+    <div class="alert alert-success" role="alert">@successMessage</div>
+}
+
+@if (!string.IsNullOrEmpty(errorMessage)) {
+    <div class="alert alert-danger" role="alert">@errorMessage</div>
+}
+
+<br>
+
+<p><strong>Course:</strong> @Model.CourseName</p>
+<p><strong>Student:</strong> @Model.StudentName</p>
+
+<form asp-action="AddGrade" method="post">
+    @Html.AntiForgeryToken()
+    
+    <input type="hidden" asp-for="CourseId" />
+    <input type="hidden" asp-for="StudentId" />
+
+    <br>
+
+    <div class="form-group">
+        <label asp-for="Grade">Grade (0-10)</label>
+        <input asp-for="Grade" type="number" class="form-control" min="0" max="10" placeholder="Grade (0-10)" required />
+        <span asp-validation-for="Grade" class="text-danger"></span>
+    </div>
+
+    <br>
+
+    <div class="form-group">
+        <label asp-for="Description">Description</label>
+        <input asp-for="Description" class="form-control" placeholder="e.g., Midterm Exam, Final Exam, Project" maxlength="60" />
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+
+    <br>
+
+    <div class="form-check">
+        <input asp-for="IsFinal" type="checkbox" class="form-check-input" />
+        <label asp-for="IsFinal" class="form-check-label"></label>
+        <div>
+            <small class="text-muted">Check this if this is the student's final grade for the course</small>
+        </div>
+    </div>
+
+    <br>
+    
+    <button type="submit" class="btn btn-primary">Confirm</button>
+</form>
+
+<div asp-validation-summary="All" class="text-danger mt-2"></div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

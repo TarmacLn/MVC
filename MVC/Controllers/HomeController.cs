@@ -130,69 +130,91 @@ namespace MVC.Controllers
                 return View(model);
             }
 
-            var exists = await _context.Users.AnyAsync(u => u.Username == model.Username);
-            if (exists)
+            var existingUser = await _context.Users.FirstOrDefaultAsync(u => u.Username == model.Username);
+            if (existingUser != null)
             {
-                ModelState.AddModelError("Username", "Username is already taken.");
+                ModelState.AddModelError("Username", "Username already exists.");
                 return View(model);
             }
 
-            var userTypeName = model.UserType.ToString();
-            await _context.Database.ExecuteSqlRawAsync(
-                "INSERT INTO users (username, user_password, user_type) VALUES ({0}, {1}, {2}::user_type)",
-                model.Username, model.Password, userTypeName);
-
-            var newUser = await _context.Users.FirstOrDefaultAsync(u => u.Username == model.Username);
-            if (newUser == null)
+            try
             {
-                ModelState.AddModelError(string.Empty, "Failed to create user.");
+                var userTypeName = model.UserType.ToString();
+                
+                // Add null check to satisfy the compiler
+                if (string.IsNullOrEmpty(model.Username) || string.IsNullOrEmpty(model.Password))
+                {
+                    ModelState.AddModelError(string.Empty, "Username and password are required.");
+                    return View(model);
+                }
+
+                await _context.Database.ExecuteSqlRawAsync(
+                    "INSERT INTO users (username, user_password, user_type) VALUES ({0}, {1}, {2}::user_type)",
+                    model.Username, model.Password, userTypeName);
+
+                var newUser = await _context.Users.FirstOrDefaultAsync(u => u.Username == model.Username);
+                
+                if (newUser == null)
+                {
+                    ModelState.AddModelError(string.Empty, "Failed to create user.");
+                    return View(model);
+                }
+
+                var tableName = model.UserType switch
+                {
+                    UserType.Student => "students",
+                    UserType.Professor => "professors",
+                    UserType.Secretary => "secretaries",
+                    _ => throw new InvalidOperationException($"Unknown user type: {model.UserType}")
+                };
+
+                if (model.UserType == UserType.Student)
+                {
+                    var departmentName = GetDepartmentDbValue(model.Department);
+                    await _context.Database.ExecuteSqlRawAsync(
+                        "INSERT INTO students (user_id, fullname, department) VALUES ({0}, {1}, {2}::department)",
+                        newUser.Id, model.Fullname, departmentName);
+                }
+                else if (model.UserType == UserType.Professor)
+                {
+                    var departmentName = GetDepartmentDbValue(model.Department);
+                    await _context.Database.ExecuteSqlRawAsync(
+                        "INSERT INTO professors (user_id, afm, fullname, department) VALUES ({0}, {1}, {2}, {3}::department)",
+                        newUser.Id, model.AFM, model.Fullname, departmentName);
+                }
+                else if (model.UserType == UserType.Secretary)
+                {
+                    var departmentName = GetDepartmentDbValue(model.Department);
+                    await _context.Database.ExecuteSqlRawAsync(
+                        "INSERT INTO secretaries (user_id, fullname, phonenumber, department) VALUES ({0}, {1}, {2}, {3}::department)",
+                        newUser.Id, model.Fullname, model.PhoneNumber, departmentName);
+                }
+
+                // Auto-login after successful sign up
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.NameIdentifier, newUser.Id.ToString()),
+                    new Claim(ClaimTypes.Name, newUser.Username),
+                    new Claim(ClaimTypes.Role, newUser.UserType.ToString())
+                };
+                var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                await HttpContext.SignInAsync(
+                    CookieAuthenticationDefaults.AuthenticationScheme,
+                    new ClaimsPrincipal(identity));
+
+                return newUser.UserType switch
+                {
+                    UserType.Secretary => RedirectToAction("Index", "Secretary"),
+                    UserType.Professor => RedirectToAction("Index", "Professor"),
+                    UserType.Student => RedirectToAction("Index", "Student"),
+                    _ => RedirectToAction("Index", "Home")
+                };
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, $"An error occurred: {ex.Message}");
                 return View(model);
             }
-
-            // Insert into respective table based on user type
-            var tableName = model.UserType switch
-            {
-                UserType.Student => "students",
-                UserType.Professor => "professors",
-                UserType.Secretary => "secretaries",
-                _ => throw new InvalidOperationException($"Unknown user type: {model.UserType}")
-            };
-
-            if (model.UserType == UserType.Student)
-            {
-                var departmentName = GetDepartmentDbValue(model.Department);
-                await _context.Database.ExecuteSqlRawAsync(
-                    "INSERT INTO students (user_id, fullname, department) VALUES ({0}, {1}, {2}::department)",
-                    newUser.Id, model.Fullname, departmentName);
-            }
-            else if (model.UserType == UserType.Professor)
-            {
-                var departmentName = GetDepartmentDbValue(model.Department);
-                await _context.Database.ExecuteSqlRawAsync(
-                    "INSERT INTO professors (user_id, afm, fullname, department) VALUES ({0}, {1}, {2}, {3}::department)",
-                    newUser.Id, model.AFM, model.Fullname, departmentName);
-            }
-            else if (model.UserType == UserType.Secretary)
-            {
-                var departmentName = GetDepartmentDbValue(model.Department);
-                await _context.Database.ExecuteSqlRawAsync(
-                    "INSERT INTO secretaries (user_id, fullname, phonenumber, department) VALUES ({0}, {1}, {2}, {3}::department)",
-                    newUser.Id, model.Fullname, model.PhoneNumber, departmentName);
-            }
-
-            // Auto-login after successful sign up
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.NameIdentifier, newUser.Id.ToString()),
-                new Claim(ClaimTypes.Name, newUser.Username),
-                new Claim(ClaimTypes.Role, newUser.UserType.ToString())
-            };
-            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-            await HttpContext.SignInAsync(
-                CookieAuthenticationDefaults.AuthenticationScheme,
-                new ClaimsPrincipal(identity));
-
-            return RedirectToAction("Index", "Users");
         }
 
         public IActionResult About()
