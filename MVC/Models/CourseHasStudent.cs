@@ -5,6 +5,10 @@ namespace MVC.Models
 {
     public class CourseHasStudent
     {
+        [Column("id")]
+        [Key]
+        public int Id { get; set; }
+
         [Column("course_id")]
         public int CourseId { get; set; }
 

@@ -35,27 +35,20 @@ namespace MVC.Controllers
         
 
 
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
+        {
+            return View();
+        }
+
+
+        public async Task<IActionResult> GradesPerCourse()
         {
             var studentId = GetCurrentStudentId();
             if (studentId == null)
             {
-                return RedirectToAction("Login", "Account");
+                return RedirectToAction("Login", "Home");
             }
             
-            var grades = await _context.CourseHasStudents
-                .Include(g => g.Course)
-                .Where(g => g.StudentId == studentId)
-                .ToListAsync();
-
-            return View(grades);
-        }
-
-
-        // View Grades per Subject
-        public async Task<IActionResult> GradesPerSubject()
-        {
-            var studentId = GetCurrentStudentId();
             var grades = await _context.CourseHasStudents
                 .Include(g => g.Course)
                 .Where(g => g.StudentId == studentId)
@@ -69,22 +62,32 @@ namespace MVC.Controllers
         public async Task<IActionResult> GradesPerSemester()
         {
             var studentId = GetCurrentStudentId();
+            if (studentId == null)
+            {
+                return RedirectToAction("Login", "Home");
+            }
+
             var grades = await _context.CourseHasStudents
                 .Include(g => g.Course)
                 .Where(g => g.StudentId == studentId)
                 .OrderBy(g => g.Course.Semester)
+                .ThenBy(g => g.Course.Title)
                 .ToListAsync();
 
             return View(grades);
         }
 
-        // View All Passed Courses
-        public async Task<IActionResult> PassedCourses()
+        public async Task<IActionResult> TotalAverage()
         {
             var studentId = GetCurrentStudentId();
+            if (studentId == null)
+            {
+                return RedirectToAction("Login", "Home");
+            }
+
             var grades = await _context.CourseHasStudents
                 .Include(g => g.Course)
-                .Where(g => g.StudentId == studentId && g.Grade >= 5)
+                .Where(g => g.StudentId == studentId && g.IsFinal == true && g.Grade.HasValue)
                 .ToListAsync();
 
             return View(grades);

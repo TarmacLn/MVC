@@ -1,83 +1,34 @@
-@model IEnumerable<MVC.Models.CourseHasStudent>
+@{
+    ViewData["Title"] = "Student Portal";
+}
 
-<div class="container">
-    <div>
-    @{
-        ViewData["Title"] = "Student Dashboard";
-    }
+<div class="text-center">
+    <h1 class="display-4">Student Portal</h1>
+    <p>View your grades and academic performance</p>
+</div>
+
+<br>
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="d-grid gap-3">
+            <a asp-action="GradesPerSemester" asp-controller="Student" class="btn btn-outline-primary btn-lg">
+                <i class="bi bi-calendar-check"></i> Grades per Semester
+            </a>
+            
+            <a asp-action="GradesPerCourse" asp-controller="Student" class="btn btn-outline-primary btn-lg">
+                <i class="bi bi-book"></i> Grades per Course
+            </a>
+            
+            <a asp-action="TotalAverage" asp-controller="Student" class="btn btn-outline-primary btn-lg">
+                <i class="bi bi-calculator"></i> Total Average
+            </a>
+        </div>
     </div>
-    <br />
-    <br />
-    <br />
-    <h2>Grades per Semester</h2>
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Semester</th>
-                <th>Course Title</th>
-                <th>Grade</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>@item.Course.Semester</td>
-                    <td>@item.Course.Title</td>
-                    <td>@item.Grade</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-    <br />
-    <br />
-    <br />
-    <div>
-        <h2>Grades per Course</h2>
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Course Title</th>
-                    <th>Semester</th>
-                    <th>Grade</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
-                    <tr>
-                        <td>@item.Course.Title</td> <td>@item.Course.Semester</td>
-                        <td>
-                            <span>@item.Grade</span>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
-    <br />
-    <br />
-    <br />
-    <div>
-        <h2>Passed Courses</h2>
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Course Title</th>
-                    <th>Semester</th>
-                    <th>Grade</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
-                    <tr>
-                        <td>@item.Course.Title</td>
-                        <td>@item.Course.Semester</td>
-                        <td>@item.Grade</td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
+</div>
+
+<br>
+
+<div class="text-center">
+    <a asp-action="Index" asp-controller="Users" class="btn btn-secondary">Back to Main Menu</a>
 </div>
