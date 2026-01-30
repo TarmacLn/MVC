@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using MVC.Data;
+using MVC.Extensions;
 using MVC.Models;
 
 namespace MVC.Controllers {
@@ -198,7 +199,7 @@ namespace MVC.Controllers {
                 // Insert the new user to the professors table along with his additional details
                 await _context.Database.ExecuteSqlRawAsync(
                     "INSERT INTO professors (user_id, afm, fullname, department) VALUES ({0}, {1}, {2}, {3}::department)",
-                    newUser.Id, model.AFM, model.Fullname, model.Department.ToString());
+                    newUser.Id, model.AFM, model.Fullname, model.Department.ToDbValue());
 
                 TempData["SuccessMessage"] = "New professor added successfully!";
                 return RedirectToAction(nameof(AddProfessor));
@@ -246,7 +247,7 @@ namespace MVC.Controllers {
                 // Insert the new user to the students table along with his additional details
                 await _context.Database.ExecuteSqlRawAsync(
                     "INSERT INTO students (user_id,fullname, department) VALUES ({0}, {1}, {2}::department)",
-                    newUser.Id, model.Fullname, model.Department.ToString());
+                    newUser.Id, model.Fullname, model.Department.ToDbValue());
 
                 TempData["SuccessMessage"] = "New student added successfully!";
                 return RedirectToAction(nameof(AddStudent));

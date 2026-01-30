@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using MVC.Extensions;
 using MVC.Models;
 
 namespace MVC.Data
@@ -21,12 +22,8 @@ namespace MVC.Data
         {
             // Department converter for display and storage
             var departmentConverter = new ValueConverter<Department, string>(
-                v => v == Department.ComputerScience ? "Computer Science" :
-                     v == Department.BusinessAdministration ? "Business Administration" :
-                     v == Department.Sociology ? "Sociology" : "Computer Science",
-                v => v == "Computer Science" ? Department.ComputerScience :
-                     v == "Business Administration" ? Department.BusinessAdministration :
-                     v == "Sociology" ? Department.Sociology : Department.ComputerScience
+                v => v.ToDbValue(),
+                v => DepartmentExtensions.FromDbValue(v)
             );
 
             modelBuilder.Entity<User>().ToTable("users");
