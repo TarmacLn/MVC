@@ -194,5 +194,10 @@ namespace MVC.Controllers
 
             return RedirectToAction("Index", "Users");
         }
+
+        public IActionResult About()
+        {
+            return View();
+        }
     }
 }
