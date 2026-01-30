@@ -1,11 +1,12 @@
 @model MVC.Models.EnrollInCourseViewModel
 
 @{
+    ViewData["Title"] = "Enroll in Course";
     var successMessage = TempData["SuccessMessage"] as string;
     var errorMessage = TempData["ErrorMessage"] as string;
 }
 
-<a asp-action="EnrollInCourse" asp-controller="Secretary" class="btn btn-secondary">Back</a>
+<a asp-action="UsersList" asp-controller="Secretary" class="btn btn-secondary">Back</a>
 
 <br>    
 
