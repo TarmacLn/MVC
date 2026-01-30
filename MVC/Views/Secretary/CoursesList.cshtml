@@ -1,3 +1,4 @@
+@using MVC.Models
 @model IEnumerable<MVC.Models.Course>
 
 <a asp-action="Index" asp-controller="Secretary" class="btn btn-secondary">Back</a>
@@ -20,7 +21,7 @@
         </tr>
     </thead>
     <tbody>
-    @foreach (var course in Model.Where(c => c.Professor != null && c.Professor.Department == "Computer Science"))
+    @foreach (var course in Model.Where(c => c.Professor != null && c.Professor.Department == Department.ComputerScience))
     {
         <tr>
             <td>@course.CourseId</td>
@@ -45,7 +46,7 @@
         </tr>
     </thead>
     <tbody>
-    @foreach( var course in Model.Where(c => c.Professor != null && c.Professor.Department == "Sociology"))
+    @foreach( var course in Model.Where(c => c.Professor != null && c.Professor.Department == Department.Sociology))
     {
         <tr>
             <td>@course.CourseId</td>
@@ -70,7 +71,7 @@
         </tr>
     </thead>
     <tbody>
-    @foreach (var course in Model.Where(c => c.Professor != null && c.Professor.Department == "Business Administration"))
+    @foreach (var course in Model.Where(c => c.Professor != null && c.Professor.Department == Department.BusinessAdministration))
     {
         <tr>
             <td>@course.CourseId</td>

@@ -11,6 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 var dataSourceBuilder = new NpgsqlDataSourceBuilder(
     builder.Configuration.GetConnectionString("DefaultConnection"));
 dataSourceBuilder.MapEnum<UserType>();
+dataSourceBuilder.MapEnum<Department>();
 var dataSource = dataSourceBuilder.Build();
 
 builder.Services.AddDbContext<UniversityAppDB>(options =>
